@@ -12,9 +12,6 @@ This is a Simple CLI tool based on nodejs for generating html files from our tex
 * Install dependencies
   
   ``` npm i ```
-* Install commander.js
-
-  ``` npm install commander ```
 
 -------------
 
