@@ -2,7 +2,6 @@
 
 const fs = require('fs');
 const path = require('path');
-// const readline = require('readline');
 const { createInterface } = require('readline');
 const { createReadStream } = require('fs');
 const { once } = require('events');
@@ -129,8 +128,6 @@ if(options.index){
   
   files.forEach(file => { // getting the files inside the folder
     
-    
-    // console.log("\Filenames with the .txt extension:");
     if (path.extname(file) == ".txt"){ // Finding the text files
       const folderName = 'dist';
   
