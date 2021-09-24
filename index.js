@@ -197,7 +197,7 @@ if(options.index){
           para
             .replace(/^# (.*$)/gim, '<h1>$1</h1>')
             .replace(/^## (.*$)/gim, '<h2>$1</h2>')
-            .replace(/^--- (.*$)/gim, '<br/>')
+            .replace(/^--- (.*$)/gim, '<hr/>')
         )
         .join('\n');
     
