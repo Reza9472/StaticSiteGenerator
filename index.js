@@ -176,6 +176,45 @@ if(options.index){
   
   
       })
+    } else if (path.extname(file) == ".md"){
+      console.log("md file inputted!")
+      const folderName = 'dir';
+  
+      const htmlFile = fs.readFileSync(`${__dirname}/index.html`)
+  
+      filenameWithoutExt = path.parse(file).name; // The name part of the file (EX: name.txt => name)
+  
+      fs.writeFileSync(`${process.cwd()}/${folderName}/${filenameWithoutExt}.html` , htmlFile);  
+      
+      fs.readFile(file , {encoding:'utf8', flag:'r'},
+      function(err, data) {
+        if(err)
+        console.log(err);
+       
+
+        var editedText = data.split(/\r?\n\r?\n/)
+        .map((para) =>
+          para
+            .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+            .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+            .replace(/^--- (.*$)/gim, '<br/>')
+        )
+        .join('\n');
+    
+        let title = editedText.split("</p>")[0].split(">" , 2)[1]; // getting the title of the text
+
+        titleInsidePTag = `<h1 style="text-align: center; background-color: black; color: white; width: 50%; height: 100%; border-radius: 10px; margin: auto; top: 15px; ">${title}</h1>`
+        
+        // Appending the title
+        fs.appendFile(`${process.cwd()}/${folderName}/${path.parse(file).name}.html` , titleInsidePTag , function(err){
+          if(err) throw err;
+        })
+
+        // Appending the rest of the text
+        fs.appendFile(`${process.cwd()}/${folderName}/${path.parse(file).name}.html` , editedText.replace(title , "") , function(err){
+          if(err) throw err;
+        })
+      })     
     }
   })
 
