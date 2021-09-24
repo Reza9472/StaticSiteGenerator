@@ -27,7 +27,7 @@ if(options.index){
 
   const folderName = 'dist'; 
 
-  // creating the dir folder if it doesn't exist
+  // creating the dist folder if it doesn't exist
 
   try {
     if (!fs.existsSync(folderName)) {
