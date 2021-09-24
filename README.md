@@ -34,6 +34,6 @@ This is a Simple CLI tool based on nodejs for generating html files from our tex
 # License
 This project is licensed under the MIT license
 
-# Authur
+# Author
 
 Reza Poursafa
