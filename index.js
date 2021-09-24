@@ -12,7 +12,6 @@ program.version('0.1');
 program
  
   .option('-i ,--index', 'Single txt file ') // option for adding a single text file
-  // .option('-i, --folder', 'All text files from the "Text Files" folder ') // option for adding a folder
 
 
 program.parse(process.argv);
@@ -27,10 +26,7 @@ if(options.index){
   
   if (isFile) { // if the passed value is a file
 
-    // console.log(process.argv[3]);
-
-  const folderName = 'dir'; 
-
+  const folderName = 'dist'; 
 
   // creating the dir folder if it doesn't exist
 
@@ -65,9 +61,7 @@ if(options.index){
 
             if(counter === true){
 
-              // console.log(line);
               let header = `<h1 style='text-align: center; background-color: black; color: white; width: 50%; height: 100%; border-radius: 10px; margin: auto;'>${line}</h1>`;
-
 
               fs.appendFile(`${process.cwd()}/${folderName}/${filenameWithoutExt}.html` , header , function(err){
                 if(err) throw err;
@@ -110,7 +104,7 @@ if(options.index){
     
   } else if (isDir) {
 
-    const folderName = 'dir'; 
+    const folderName = 'dist'; 
 
 
     // creating the dir folder if it doesn't exist
@@ -130,7 +124,7 @@ if(options.index){
   // Function to get current filenames
   // in directory with specific extension
   files = fs.readdirSync(__dirname + '/text files');
-  // console.log(path.extname(process.argv[3]));
+  console.log(path.extname(process.argv[3]));
   
   
   files.forEach(file => { // getting the files inside the folder
@@ -138,7 +132,7 @@ if(options.index){
     
     // console.log("\Filenames with the .txt extension:");
     if (path.extname(file) == ".txt"){ // Finding the text files
-      const folderName = 'dir';
+      const folderName = 'dist';
   
       const htmlFile = fs.readFileSync(`${__dirname}/index.html`)
   
