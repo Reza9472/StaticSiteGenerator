@@ -26,11 +26,11 @@ This is a Simple CLI tool based on nodejs for generating html files from our tex
 * Display command instructions (help):
 
   ``` reza-ssg --help```
-* Create an html file from a text file:
+* Create an html file from a text or markdown file:
 
   ``` reza-ssg --index "Silver Blaze".txt ```
 
-* Create html files from all the text files inside the 'text files' folder:
+* Create html files from all the text or markdown files inside the 'text files' folder:
 
   ``` reza-ssg --index "text files" ```
 
