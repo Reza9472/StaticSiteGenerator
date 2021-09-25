@@ -25,89 +25,10 @@ if(options.index){
   
   if (isFile) { // if the passed value is a file
 
-  const folderName = 'dist'; 
-
-  // creating the dist folder if it doesn't exist
-
-  try {
-    if (!fs.existsSync(folderName)) {
-      fs.mkdirSync(folderName)
-    }
-  } catch (err) {
-    console.error(err);
-  }
-
-  function createHtml(){
-
-      const htmlFile = fs.readFileSync(`${__dirname}/index.html`)
-      var filename = process.argv[3]; // getting the filename
-
-      filenameWithoutExt = path.parse(filename).name; // The name part of the filename without thwe extension
-      
-      fs.writeFileSync(`${process.cwd()}/${folderName}/${filenameWithoutExt}.html` , htmlFile);
-
-
-      let counter = true; // for skipping the header 
-      (async function processLineByLine() {
-        try {
-          const rl = createInterface({
-            input: createReadStream(filename),
-            crlfDelay: Infinity
-          });
-          
-          let skipHeader = true; // for getting the header when we append it to the html
-          rl.on('line', (line) => {
-
-            if(counter === true){
-
-              let header = `<h1 style='text-align: center; background-color: black; color: white; width: 50%; height: 100%; border-radius: 10px; margin: auto;'>${line}</h1>`;
-
-              fs.appendFile(`${process.cwd()}/${folderName}/${filenameWithoutExt}.html` , header , function(err){
-                if(err) throw err;
-              })
-            } 
-            counter = false;
-
-
-            if(line !== ''){
-
-              var toPrepand = `<p style="text-align: center;  font-family: 'Gentium Basic', serif; font-size: 20px; ">`;
-              
-              toPrepand = toPrepand.concat(`${line}`);
-            }else{
-              var toPrepand = '</p><br>';
-            }
-
-            // Process the line.
-
-            if(skipHeader === false){
-
-              fs.appendFile(`${process.cwd()}/${folderName}/${filenameWithoutExt}.html` , toPrepand , function(err){
-                if(err) throw err;
-              })
-            }
-            skipHeader = false;
-          });
-      
-          await once(rl, 'close');
-      
-          console.log('File processed.');
-          console.log('HTML File created.');
-        } catch (err) {
-          console.error(err);
-        }
-      })();
-
-    }
-    createHtml();
-    
-  } else if (isDir) {
-
     const folderName = 'dist'; 
 
+    // creating the dist folder if it doesn't exist
 
-    // creating the dir folder if it doesn't exist
-  
     try {
       if (!fs.existsSync(folderName)) {
         fs.mkdirSync(folderName)
@@ -116,59 +37,138 @@ if(options.index){
       console.error(err);
     }
 
-    // If a FOLDER is passed (reza-ssg --folder "text files")
+    function createHtml(){
+
+        const htmlFile = fs.readFileSync(`${__dirname}/index.html`)
+        var filename = process.argv[3]; // getting the filename
+
+        filenameWithoutExt = path.parse(filename).name; // The name part of the filename without thwe extension
+        
+        fs.writeFileSync(`${process.cwd()}/${folderName}/${filenameWithoutExt}.html` , htmlFile);
+
+
+        let counter = true; // for skipping the header 
+        (async function processLineByLine() {
+          try {
+            const rl = createInterface({
+              input: createReadStream(filename),
+              crlfDelay: Infinity
+            });
+            
+            let skipHeader = true; // for getting the header when we append it to the html
+            rl.on('line', (line) => {
+
+              if(counter === true){
+
+                let header = `<h1 style='text-align: center; background-color: black; color: white; width: 50%; height: 100%; border-radius: 10px; margin: auto;'>${line}</h1>`;
+
+                fs.appendFile(`${process.cwd()}/${folderName}/${filenameWithoutExt}.html` , header , function(err){
+                  if(err) throw err;
+                })
+              } 
+              counter = false;
+
+
+              if(line !== ''){
+
+                var toPrepand = `<p style="text-align: center;  font-family: 'Gentium Basic', serif; font-size: 20px; ">`;
+                
+                toPrepand = toPrepand.concat(`${line}`);
+              }else{
+                var toPrepand = '</p><br>';
+              }
+
+              // Process the line.
+
+              if(skipHeader === false){
+
+                fs.appendFile(`${process.cwd()}/${folderName}/${filenameWithoutExt}.html` , toPrepand , function(err){
+                  if(err) throw err;
+                })
+              }
+              skipHeader = false;
+            });
+        
+            await once(rl, 'close');
+        
+            console.log('File processed.');
+            console.log('HTML File created.');
+          } catch (err) {
+            console.error(err);
+          }
+        })();
+
+      }
+      createHtml();
     
-  console.log(process.argv[3]);
-  
-  // Function to get current filenames
-  // in directory with specific extension
-  files = fs.readdirSync(__dirname + '/text files');
-  console.log(path.extname(process.argv[3]));
-  
-  
-  files.forEach(file => { // getting the files inside the folder
-    
-    if (path.extname(file) == ".txt"){ // Finding the text files
-      const folderName = 'dist';
-  
-      const htmlFile = fs.readFileSync(`${__dirname}/index.html`)
-  
-      filenameWithoutExt = path.parse(file).name; // The name part of the file (EX: name.txt => name)
-  
-      fs.writeFileSync(`${process.cwd()}/${folderName}/${filenameWithoutExt}.html` , htmlFile);  
+  } else if (isDir) {
+
+        const folderName = 'dist'; 
+
+
+        // creating the dir folder if it doesn't exist
       
-      fs.readFile(file , {encoding:'utf8', flag:'r'},
-      function(err, data) {
-        if(err)
-        console.log(err);
-        else
+        try {
+          if (!fs.existsSync(folderName)) {
+            fs.mkdirSync(folderName)
+          }
+        } catch (err) {
+          console.error(err);
+        }
 
-        var editedText = data // Editing the text to recieved from the files 
-        .split(/\r?\n\r?\n/)
-        .map(para =>
-          `<p style="text-align: center; margin: 60px; font-family: 'Gentium Basic', serif; font-size: 24px; background-color: #fff2cc; padding: 10px; border-radius: 20px">${para.replace(/\r?\n/, ' ')}</p>`
-        )
-        .join(' ');
+        // If a FOLDER is passed (reza-ssg --folder "text files")
         
-
-        let title = editedText.split("</p>")[0].split(">" , 2)[1]; // getting the title of the text
-
-        titleInsidePTag = `<h1 style="text-align: center; background-color: black; color: white; width: 50%; height: 100%; border-radius: 10px; margin: auto; top: 15px; ">${title}</h1>`
+      console.log(process.argv[3]);
+      
+      // Function to get current filenames
+      // in directory with specific extension
+      files = fs.readdirSync(__dirname + '/text files');
+      console.log(path.extname(process.argv[3]));
+      
+      
+      files.forEach(file => { // getting the files inside the folder
         
-        // Appending the title
-        fs.appendFile(`${process.cwd()}/${folderName}/${path.parse(file).name}.html` , titleInsidePTag , function(err){
-          if(err) throw err;
-        })
+        if (path.extname(file) == ".txt"){ // Finding the text files
+          const folderName = 'dist';
+      
+          const htmlFile = fs.readFileSync(`${__dirname}/index.html`)
+      
+          filenameWithoutExt = path.parse(file).name; // The name part of the file (EX: name.txt => name)
+      
+          fs.writeFileSync(`${process.cwd()}/${folderName}/${filenameWithoutExt}.html` , htmlFile);  
+          
+          fs.readFile(file , {encoding:'utf8', flag:'r'},
+          function(err, data) {
+            if(err)
+            console.log(err);
+            else
 
-        // Appending the rest of the text
-        fs.appendFile(`${process.cwd()}/${folderName}/${path.parse(file).name}.html` , editedText.replace(title , "") , function(err){
-          if(err) throw err;
-        })
-  
-  
+            var editedText = data // Editing the text to recieved from the files 
+            .split(/\r?\n\r?\n/)
+            .map(para =>
+              `<p style="text-align: center; margin: 60px; font-family: 'Gentium Basic', serif; font-size: 24px; background-color: #fff2cc; padding: 10px; border-radius: 20px">${para.replace(/\r?\n/, ' ')}</p>`
+            )
+            .join(' ');
+            
+
+            let title = editedText.split("</p>")[0].split(">" , 2)[1]; // getting the title of the text
+
+            titleInsidePTag = `<h1 style="text-align: center; background-color: black; color: white; width: 50%; height: 100%; border-radius: 10px; margin: auto; top: 15px; ">${title}</h1>`
+            
+            // Appending the title
+            fs.appendFile(`${process.cwd()}/${folderName}/${path.parse(file).name}.html` , titleInsidePTag , function(err){
+              if(err) throw err;
+            })
+
+            // Appending the rest of the text
+            fs.appendFile(`${process.cwd()}/${folderName}/${path.parse(file).name}.html` , editedText.replace(title , "") , function(err){
+              if(err) throw err;
+            })
+      
+      
+          })
+        }
       })
-    }
-  })
 
           console.log('Files processed.');
           console.log('HTML Files created.');
