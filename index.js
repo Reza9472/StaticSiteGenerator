@@ -6,11 +6,10 @@ const { createInterface } = require('readline');
 const { createReadStream } = require('fs');
 const { once } = require('events');
 const { program } = require('commander');
-program.version('0.1');
 
-program
- 
-  .option('-i ,--index', 'Single txt file ') // option for adding a single text file
+
+program.version( require('./package.json').version); // Getting the verison of the file
+program.option('-i ,--index', 'Single txt file ') // option for adding a single text file
 
 
 program.parse(process.argv);
