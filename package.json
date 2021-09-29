@@ -1,5 +1,5 @@
 {
-  "name": "rezassg",
+  "name": "StaticSiteGenerator",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,7 +10,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Reza Poursafa",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "commander": "^8.2.0"
   }

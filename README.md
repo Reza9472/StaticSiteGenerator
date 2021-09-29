@@ -11,10 +11,7 @@ This is a Simple CLI tool based on nodejs for generating html files from our tex
   ``` git clone https://github.com/Reza9472/StaticSiteGenerator.git ```
 * Install dependencies
   
-  ``` npm install -g ```
-* Install commander.js
-
-  ``` npm install commander ```
+  ``` npm i ```
 
 -------------
 
@@ -37,6 +34,6 @@ This is a Simple CLI tool based on nodejs for generating html files from our tex
 # License
 This project is licensed under the MIT license
 
-# Authur
+# Author
 
 Reza Poursafa
