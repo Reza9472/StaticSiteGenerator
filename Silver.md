@@ -21,7 +21,9 @@ absolutely deaf to any of my questions or remarks. Fresh editions
 of every paper had been sent up by our news agent, only to be
 glanced over and tossed down into a corner. Yet, silent as he
 was, I knew perfectly well what it was over which he was
-brooding. There was but one problem before the public which could
+brooding.
+
+ There was but one problem before the public which could
 challenge his powers of analysis, and that was the singular
 disappearance of the favourite for the Wessex Cup, and the tragic
 murder of its trainer. When, therefore, he suddenly announced his

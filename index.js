@@ -233,7 +233,7 @@ function readMarkdownFile(file, folderName) {
 
       var editedText = data
         .split(/\r?\n\r?\n/)
-        .map((para) => (createHTMLFromMarkdown(para)))
+        .map((para) => `<p style="font-family: 'Gentium Basic', serif; font-size: 20px; ">` + createHTMLFromMarkdown(para) + `</p>`)
         .join("\n");
 
       let titleInsidePTag = `<h1 style="text-align: center; background-color: black; color: white; width: 50%; border-radius: 10px; margin: auto; top: 15px; ">${title}</h1>`;
