@@ -222,5 +222,29 @@ if(options.index){
  
 }
 
+function createHTMLFromMarkdown(para) {
+  return  para
+    .replace(/^# (.*$)/gim, "<h1>$1</h1>")
+    .replace(/^## (.*$)/gim, "<h2>$1</h2>")
+    .replace(/^--- (.*$)/gim, "<hr/>")
+    .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+		.replace(/^\> (.*$)/gim, '<blockquote>$1</blockquote>')
+		.replace(/\*\*(.*)\*\*/gim, '<b>$1</b>')
+		.replace(/\*(.*)\*/gim, '<i>$1</i>')
+		.replace(/\[(.*?)\]\((.*?)\)/gim, "<a href='$2'>$1</a>")
+		.replace(/\n$/gim, '<br /><br />');
+}
+
+function removeMarkdownFormatting(text){
+  return text
+		.replace(/^### (.*$)/gim, '$1')
+		.replace(/^## (.*$)/gim, '$1')
+		.replace(/^# (.*$)/gim, '$1')
+		.replace(/^\> (.*$)/gim, '$1')
+		.replace(/\*\*(.*)\*\*/gim, '$1')
+		.replace(/\*(.*)\*/gim, '$1')
+		.replace(/\n$/gim, '$1')
+}
+
 // ----------------------------------------------------------------------------------------------------------
 
