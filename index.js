@@ -98,7 +98,12 @@ if(options.index){
         })();
 
       }
-      createHtml();
+      let extension = path.extname(process.argv[3]);
+      if (extension  === ".txt") {
+        createHtml();
+      } else if (extension === ".md") {
+        readMarkdownFile(process.argv[3], "dist")
+      }
     
   } else if (isDir) {
 
@@ -166,6 +171,19 @@ if(options.index){
       
       
           })
+        }else if (path.extname(file) == ".md") {
+          const folderName = "dist";
+  
+          const htmlFile = fs.readFileSync(`${__dirname}/index.html`);
+  
+          filenameWithoutExt = path.parse(file).name; // The name part of the file (EX: name.txt => name)
+  
+          fs.writeFileSync(
+            `${process.cwd()}/${folderName}/${filenameWithoutExt}.html`,
+            htmlFile
+          );
+            
+            readMarkdownFile(file, folderName)
         }
       })
 
@@ -175,6 +193,68 @@ if(options.index){
  
 }
 
-// ----------------------------------------------------------------------------------------------------------
+function createHTMLFromMarkdown(para) {
+  let p =  para
+    .replace(/^# (.*$)/gim, "<h1>$1</h1>")
+    .replace(/^## (.*$)/gim, "<h2>$1</h2>")
+    .replace(/^--- (.*$)/gim, "<hr/>")
+    .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+		.replace(/^\> (.*$)/gim, '<blockquote>$1</blockquote>')
+		.replace(/\*\*(.*)\*\*/gim, '<b>$1</b>')
+		.replace(/\*(.*)\*/gim, '<i>$1</i>')
+		.replace(/\[(.*?)\]\((.*?)\)/gim, "<a href='$2'>$1</a>")
+		.replace(/\n$/gim, '<br /><br />');
 
+    return `<p style=" font-family: 'Gentium Basic', serif; font-size: 24px; padding: 10px; border-radius: 20px">${p}</p>`;
+}
+
+function removeMarkdownFormatting(text){
+  return text
+		.replace(/^### (.*$)/gim, '$1')
+		.replace(/^## (.*$)/gim, '$1')
+		.replace(/^# (.*$)/gim, '$1')
+		.replace(/^\> (.*$)/gim, '$1')
+		.replace(/\*\*(.*)\*\*/gim, '$1')
+		.replace(/\*(.*)\*/gim, '$1')
+		.replace(/\n$/gim, '$1')
+}
+
+function readMarkdownFile(file, folderName) {
+  fs.readFile(
+    file,
+    { encoding: "utf8", flag: "r" },
+    function (err, data) {
+      if (err) console.log(err);
+      let title = removeMarkdownFormatting(data.split("\n")[0]);
+      data = data.replace(title, ""); // removes the title from the text
+
+      var editedText = data
+        .split(/\r?\n\r?\n/)
+        .map((para) => (createHTMLFromMarkdown(para)))
+        .join("\n");
+
+      let titleInsidePTag = `<h1 style="text-align: center; background-color: black; color: white; width: 50%; border-radius: 10px; margin: auto; top: 15px; ">${title}</h1>`;
+      
+      // Appending the title
+      fs.appendFile(
+        `${process.cwd()}/${folderName}/${path.parse(file).name}.html`,
+        titleInsidePTag,
+        function (err) {
+          if (err) throw err;
+        }
+      );
+
+      // Appending the rest of the text
+      fs.appendFile(
+        `${process.cwd()}/${folderName}/${path.parse(file).name}.html`,
+        editedText.replace(title, ""),
+        function (err) {
+          if (err) throw err;
+        }
+      );
+    }
+  );
+}
+
+// ----------------------------------------------------------------------------------------------------------
 
