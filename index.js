@@ -100,8 +100,11 @@ if(options.index){
       }
       let extension = path.extname(process.argv[3]);
       if (extension  === ".txt") {
+        
         createHtml();
       } else if (extension === ".md") {
+        const directory = 'dist'
+        emptyDirectory(directory);
         readMarkdownFile(process.argv[3], "dist")
       }
     
@@ -255,6 +258,20 @@ function readMarkdownFile(file, folderName) {
     }
   );
 }
+
+function emptyDirectory(directory){
+  fs.readdir(directory, (err, files) => {
+    if (err) throw err;
+
+    for (const file of files) {
+      fs.unlink(path.join(directory, file), err => {
+        if (err) throw err;
+      });
+    }
+  });
+}
+
+
 
 // ----------------------------------------------------------------------------------------------------------
 
