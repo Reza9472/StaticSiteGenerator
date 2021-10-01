@@ -76,76 +76,11 @@ if(options.index){
         })
         
       }
-        
-        
-    // function createHtml(){
-
-    //     const htmlFile = fs.readFileSync(`${__dirname}/index.html`)
-    //     var filename = process.argv[3]; // getting the filename
-
-    //     filenameWithoutExt = path.parse(filename).name; // The name part of the filename without thwe extension
-        
-    //     fs.writeFileSync(`${process.cwd()}/${folderName}/${filenameWithoutExt}.html` , htmlFile);
-
-
-    //     let counter = true; // for skipping the header 
-    //     (async function processLineByLine() {
-    //       try {
-    //         const rl = createInterface({
-    //           input: createReadStream(filename),
-    //           crlfDelay: Infinity
-    //         });
-            
-    //         let skipHeader = true; // for getting the header when we append it to the html
-    //         rl.on('line', (line) => {
-
-    //           if(counter === true){
-
-    //             let header = `<h1 style='text-align: center; background-color: black; color: white; width: 50%; height: 100%; border-radius: 10px; margin: auto;'>${line}</h1>`;
-
-    //             fs.appendFile(`${process.cwd()}/${folderName}/${filenameWithoutExt}.html` , header , function(err){
-    //               if(err) throw err;
-    //             })
-    //           } 
-    //           counter = false;
-
-
-    //           if(line !== ''){
-
-    //             var toPrepand = `<p style="text-align: center;  font-family: 'Gentium Basic', serif; font-size: 20px; ">`;
-                
-    //             toPrepand = toPrepand.concat(`${line}`);
-    //           }else{
-    //             var toPrepand = '</p><br>';
-    //           }
-
-    //           // Process the line.
-
-    //           if(skipHeader === false){
-
-    //             fs.appendFile(`${process.cwd()}/${folderName}/${filenameWithoutExt}.html` , toPrepand , function(err){
-    //               if(err) throw err;
-    //             })
-    //           }
-    //           skipHeader = false;
-    //         });
-        
-    //         await once(rl, 'close');
-        
-    //         console.log('File processed.');
-    //         console.log('HTML File created.');
-    //       } catch (err) {
-    //         console.error(err);
-    //       }
-    //     })();
-
 
       let extension = path.extname(process.argv[3]);
       if (extension  === ".txt") {
         const directory = 'dist';
         emptyDirectory(directory);
-        // readMarkdownFile(process.argv[3], "dist")
-        
         createHTML();
       } else if (extension === ".md") {
         const directory = 'dist'
