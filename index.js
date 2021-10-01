@@ -82,10 +82,13 @@ if(options.index){
         const directory = 'dist';
         emptyDirectory(directory);
         createHTML();
+
+        console.log("Operation Successful\nHTML file created");
       } else if (extension === ".md") {
         const directory = 'dist'
         emptyDirectory(directory);
         readMarkdownFile(process.argv[3], "dist")
+        console.log("Operation Successful\nHTML file created");
       }
     
   } else if (isDir) {
