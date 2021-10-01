@@ -55,7 +55,7 @@ if(options.index){
         var editedText = data // Editing the text to recieved from the files 
         .split(/\r?\n\r?\n/)
         .map(para =>
-          `<p style="text-align: center; margin: 60px; font-family: 'Gentium Basic', serif; font-size: 24px; background-color: #fff2cc; padding: 10px; border-radius: 20px">${para.replace(/\r?\n/, ' ')}</p>`
+          `<p font-family: 'Gentium Basic', serif; font-size: 24px; padding: 10px; border-radius: 20px">${para.replace(/\r?\n/, ' ')}</p>`
           )
           .join(' ');
           
