@@ -188,7 +188,8 @@ function createHTMLFromMarkdown(para) {
 		.replace(/\*(.*)\*/gim, '<i>$1</i>')
 		.replace(/\[(.*?)\]\((.*?)\)/gim, "<a href='$2'>$1</a>")
 		.replace(/\n$/gim, '<br /><br />')
-    .replace(/^( ?[-_*]){3,} ?[\t]*$/ , '<hr>');
+    .replace(/^( ?[-_*]){3,} ?[\t]*$/ , '<hr>')
+    .replace(/`([^`]+)`/g, '<code>$1</code>');
 
     return `<p style=" font-family: 'Gentium Basic', serif; font-size: 24px; padding: 10px; border-radius: 20px">${p}</p>`;
 }
