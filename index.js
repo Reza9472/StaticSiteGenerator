@@ -17,10 +17,10 @@ program.parse(process.argv);
 const options = program.opts(); // The --index or -i options
 
 try{ // checking the JSON file exist
-  const config = require('./config.json');
+  const config = require('./config1.json');
 
   var data = {
-    input: config.input ?? "./test files",
+    input: config.input ?? "./text files",
     output: config.output ?? "./dist"
   }
 
