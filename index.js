@@ -9,15 +9,16 @@ const { program } = require('commander');
 
 
 program.version( require('./package.json').version); // Getting the verison of the file
-program.option('-i ,--index', 'Single txt file ') // option for adding a single text file
-program.option('-c,--config','JSON configuration file');
+program
+  .option('-i ,--index', 'Single txt file ') // option for adding a single text file
+  .option('-c ,--config','JSON configuration file');
 
 program.parse(process.argv);
 
 const options = program.opts(); // The --index or -i options
 
 try{ // checking the JSON file exist
-  const config = require('./config1.json');
+  const config = require('./config.json');
 
   var data = {
     input: config.input ?? "./text files",
@@ -31,7 +32,7 @@ try{ // checking the JSON file exist
         throw e;
 }
 
-if(options){
+if(options.index || options.config){
   let stats = fs.statSync(process.argv[3]); // Finding out if the file is a file or folder 
 
   let isFile = stats.isFile() 
