@@ -224,7 +224,7 @@ function generateHTMLFromDir(input = process.argv[3], output = "dist"){
         
       // Function to get current filenames
       // in directory with specific extension
-      files = fs.readdirSync(__dirname + "\\" + input);
+      files = fs.readdirSync(__dirname + "/" + input);
       
       files.forEach(file => { // getting the files inside the folder
         
