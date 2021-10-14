@@ -18,7 +18,7 @@ program.parse(process.argv);
 const options = program.opts(); // The --index or -i options
 
 try{ // checking the JSON file exist
-  const config = require('./config.json');
+  const config = require(`./${process.argv[3]}`);
 
   var data = {
     input: config.input ?? "./text files",
