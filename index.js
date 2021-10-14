@@ -2,9 +2,6 @@
 
 const fs = require('fs');
 const path = require('path');
-const { createInterface } = require('readline');
-const { createReadStream } = require('fs');
-const { once } = require('events');
 const { program } = require('commander');
 
 
@@ -14,27 +11,13 @@ program
   .option('-c ,--config','JSON configuration file');
 
 program.parse(process.argv);
-
 const options = program.opts(); // The --index or -i options
 
-try{ // checking the JSON file exist
-  const config = require(`./${process.argv[3]}`);
 
-  var data = {
-    input: config.input ?? "./text files",
-    output: config.output ?? "./dist"
-  }
-
-}catch(e){ // throw error message when JSON file does not exist
-  if (e instanceof Error && e.code === "MODULE_NOT_FOUND")
-        console.log("Can't load JSON file!");
-    else
-        throw e;
-}
 
 if(options.index || options.config){
-  let stats = fs.statSync(process.argv[3]); // Finding out if the file is a file or folder 
 
+  let stats = fs.statSync(process.argv[3]); // Finding out if the file is a file or folder 
   let isFile = stats.isFile() 
   let isDir = stats.isDirectory()
   let isJson = isJSON(process.argv[3]) // check this is JSON file
@@ -43,15 +26,32 @@ if(options.index || options.config){
     generateHTMLFromFile() // using default parameter 
   } else if (isDir) {
     generateHTMLFromDir() // using default parameter 
-  } else if(isJson){ 
-    let status = fs.statSync(data.input);
-    let fileStatus = status.isFile();
-
-    if(fileStatus){
-      generateHTMLFromFile(path.basename(data.input), data.output);
+  } else if(isJson){
+    
+  try{ // checking the JSON file exist
+    const config = require(`./${process.argv[3]}`);
+    
+    var data = {
+      input: config.input ?? "./text files",
+      outputFolder: config.outputFolder ?? "./dist"
     }
-    else
-      generateHTMLFromDir(path.basename(data.input), data.output)
+    
+  }catch(e){ // throw error message when JSON file does not exist
+    if (e instanceof Error && e.code === "MODULE_NOT_FOUND")
+          console.log("Can't load JSON file!");
+      else
+          throw e;
+  }
+
+  let status = fs.statSync(data.input);
+  let fileStatus = status.isFile();
+
+  if(fileStatus){
+      generateHTMLFromFile(path.basename(data.input), data.outputFolder);
+  }
+  else{
+      generateHTMLFromDir(path.basename(data.input), data.outputFolder)
+    }
   }
  
 }
@@ -85,40 +85,11 @@ function removeMarkdownFormatting(text){
 }
 
 function readMarkdownFile(file, folderName) {
-  fs.readFile(
-    file,
-    { encoding: "utf8", flag: "r" },
-    function (err, data) {
-      if (err) console.log(err);
-      let title = removeMarkdownFormatting(data.split("\n")[0]);
-      data = data.replace(title, ""); // removes the title from the text
+  readText(file , folderName , true);
+}
 
-      var editedText = data
-        .split(/\r?\n\r?\n/)
-        .map((para) => `<p style="font-family: 'Gentium Basic', serif; font-size: 20px; ">` + createHTMLFromMarkdown(para) + `</p>`)
-        .join("\n");
-
-      let titleInsidePTag = `<h1 style="text-align: center; background-color: black; color: white; width: 50%; border-radius: 10px; margin: auto; top: 15px; ">${title}</h1>`;
-      
-      // Appending the title
-      fs.appendFile(
-        `${process.cwd()}/${folderName}/${path.parse(file).name}.html`,
-        titleInsidePTag,
-        function (err) {
-          if (err) throw err;
-        }
-      );
-
-      // Appending the rest of the text
-      fs.appendFile(
-        `${process.cwd()}/${folderName}/${path.parse(file).name}.html`,
-        editedText.replace(title, ""),
-        function (err) {
-          if (err) throw err;
-        }
-      );
-    }
-  );
+function styleText(para){
+  return para.replace(/\r?\n/, ' ');
 }
 
 function emptyDirectory(directory){
@@ -140,61 +111,24 @@ function isJSON(stats){
     return false
 }
 
-function generateHTMLFromFile(input = process.argv[3], output="./dist"){
-  const folderName = output; 
-  console.log(input);
+
+
+
+function generateHTMLFromFile(input = process.argv[3], outputFolder="./dist"){
+  const folderName = outputFolder; 
     // creating the dist folder if it doesn't exist
 
-    try {
-      if (!fs.existsSync(folderName)) {
-        fs.mkdirSync(folderName)
-      }
-    } catch (err) {
-      console.error(err);
-    }
+    createOutputFolder(folderName)
 
     function createHTML(){
       var filename = input
-      const htmlFile = fs.readFileSync(`${__dirname}/index.html`)
 
-      filenameWithoutExt = path.parse(filename).name; // The name part of the file (EX: name.txt => name)
-
-      fs.writeFileSync(`${process.cwd()}/${folderName}/${filenameWithoutExt}.html`, htmlFile);
-
-      fs.readFile(filename, { encoding: 'utf8', flag: 'r' },
-        function (err, data) {
-          if (err)
-            console.log(err);
-          else
-
-            var editedText = data // Editing the text to recieved from the files 
-              .split(/\r?\n\r?\n/)
-              .map(para =>
-                `<p font-family: 'Gentium Basic', serif; font-size: 24px; padding: 10px; border-radius: 20px">${para.replace(/\r?\n/, ' ')}</p>`
-              )
-              .join(' ');
-
-
-          let title = editedText.split("</p>")[0].split(">", 2)[1]; // getting the title of the text
-
-          titleInsidePTag = `<h1 style="text-align: center; background-color: black; color: white; width: 50%; border-radius: 10px; margin: auto; top: 15px; ">${title}</h1>`
-
-          // Appending the title
-          fs.appendFile(`${process.cwd()}/${folderName}/${path.parse(filename).name}.html`, titleInsidePTag, function (err) {
-            if (err) throw err;
-          })
-
-          // Appending the rest of the text
-          fs.appendFile(`${process.cwd()}/${folderName}/${path.parse(filename).name}.html`, editedText.replace(title, ""), function (err) {
-            if (err) throw err;
-          })
-        })
-
-
+      appendTextInHTML(filename , folderName);
+      
       } 
       let extension = path.extname(input);
       if (extension  === ".txt") {
-        const directory = output;
+        const directory = outputFolder;
         emptyDirectory(directory);
         createHTML();
 
@@ -202,89 +136,112 @@ function generateHTMLFromFile(input = process.argv[3], output="./dist"){
       } else if (extension === ".md") {
         const directory = 'dist'
         emptyDirectory(directory);
-        readMarkdownFile(input, output)
+        readMarkdownFile(input, outputFolder)
         console.log("Operation Successful\nHTML file created");
       }
 }
 
-function generateHTMLFromDir(input = process.argv[3], output = "dist"){
-  const folderName = output; 
+function generateHTMLFromDir(input = process.argv[3], outputFolder = "dist"){
+  const folderName = outputFolder; 
 
-        // creating the dir folder if it doesn't exist
-      
-        try {
-          if (!fs.existsSync(folderName)) {
-            fs.mkdirSync(folderName)
-          }
-        } catch (err) {
-          console.error(err);
-        }
+  // creating the dir folder if it doesn't exist
+  createOutputFolder(folderName);
 
-        // If a FOLDER is passed (reza-ssg --folder "text files")
+  // If a FOLDER is passed (reza-ssg --folder "text files")
         
-      // Function to get current filenames
-      // in directory with specific extension
-      files = fs.readdirSync(__dirname + "/" + input);
-      
-      files.forEach(file => { // getting the files inside the folder
+  // Function to get current filenames
+  // in directory with specific extension
+  files = fs.readdirSync(__dirname + "/" + input);
+  files.forEach(fileName => { // getting the files inside the folder
         
-        if (path.extname(file) == ".txt"){ // Finding the text files
-          //const folderName = 'dist';
+    if (path.extname(fileName) == ".txt"){ // Finding the text files
       
-          const htmlFile = fs.readFileSync(`${__dirname}/index.html`)
+      appendTextInHTML(fileName , folderName);
       
-          filenameWithoutExt = path.parse(file).name; // The name part of the file (EX: name.txt => name)
-      
-          fs.writeFileSync(`${process.cwd()}/${folderName}/${filenameWithoutExt}.html` , htmlFile);  
-          
-          fs.readFile(file , {encoding:'utf8', flag:'r'},
-          function(err, data) {
-            if(err)
+    }else if (path.extname(fileName) == ".md") {
+      const folderName = outputFolder;
+      const htmlFile = fs.readFileSync(`${__dirname}/index.html`);
+      filenameWithoutExt = path.parse(fileName).name; // The name part of the fileName (EX: name.txt => name)
+  
+      fs.writeFileSync(
+       `${process.cwd()}/${folderName}/${filenameWithoutExt}.html`, htmlFile
+      );
+            
+      readMarkdownFile(fileName, folderName)
+    }
+  })
+
+  successMsg();
+}
+
+function appendTextInHTML(fileName , folderName){
+  const htmlFile = fs.readFileSync(`${__dirname}/index.html`)
+
+      filenameWithoutExt = path.parse(fileName).name; // The name part of the file (EX: name.txt => name)
+      fs.writeFileSync(`${process.cwd()}/${folderName}/${filenameWithoutExt}.html`, htmlFile);
+      readText(fileName , folderName)
+}
+
+function readText(fileName , folderName , isMdFile = false){
+  fs.readFile(fileName, { encoding: 'utf8', flag: 'r' },
+        function (err, data) {
+          if (err)
             console.log(err);
-            else
+          else
+
+          if(isMdFile === true){
 
             var editedText = data // Editing the text to recieved from the files 
             .split(/\r?\n\r?\n/)
             .map(para =>
-              `<p style="text-align: center; margin: 60px; font-family: 'Gentium Basic', serif; font-size: 24px; background-color: #fff2cc; padding: 10px; border-radius: 20px">${para.replace(/\r?\n/, ' ')}</p>`
-            )
-            .join(' ');
-            
+              `<p font-family: 'Gentium Basic', serif; font-size: 24px; padding: 10px; border-radius: 20px">${createHTMLFromMarkdown(para)}</p>`
+              )
+              .join(' ');
+          }else{
+            var editedText = data // Editing the text to recieved from the files 
+            .split(/\r?\n\r?\n/)
+            .map(para =>
+              `<p font-family: 'Gentium Basic', serif; font-size: 24px; padding: 10px; border-radius: 20px">${styleText(para)}</p>`
+              )
+              .join(' ');
+          } 
 
-            let title = editedText.split("</p>")[0].split(">" , 2)[1]; // getting the title of the text
+          if(isMdFile === false){
 
-            titleInsidePTag = `<h1 style="text-align: center; background-color: black; color: white; width: 50%; height: 100%; border-radius: 10px; margin: auto; top: 15px; ">${title}</h1>`
-            
-            // Appending the title
-            fs.appendFile(`${process.cwd()}/${folderName}/${path.parse(file).name}.html` , titleInsidePTag , function(err){
-              if(err) throw err;
-            })
+            var title = editedText.split("</p>")[0].split(">", 2)[1]; // getting the title of the text
+          }else {
+            var title = removeMarkdownFormatting(data.split("\n")[0]);
+          }
 
-            // Appending the rest of the text
-            fs.appendFile(`${process.cwd()}/${folderName}/${path.parse(file).name}.html` , editedText.replace(title , "") , function(err){
-              if(err) throw err;
-            })
-      
-      
+          titleInsidePTag = `<h1 style="text-align: center; background-color: black; color: white; width: 50%; border-radius: 10px; margin: auto; top: 15px; ">${title}</h1>`
+
+          // Appending the title
+          fs.appendFile(`${process.cwd()}/${folderName}/${path.parse(fileName).name}.html`, titleInsidePTag, function (err) {
+            if (err) throw err;
           })
-        }else if (path.extname(file) == ".md") {
-          const folderName = output;
-  
-          const htmlFile = fs.readFileSync(`${__dirname}/index.html`);
-  
-          filenameWithoutExt = path.parse(file).name; // The name part of the file (EX: name.txt => name)
-  
-          fs.writeFileSync(
-            `${process.cwd()}/${folderName}/${filenameWithoutExt}.html`,
-            htmlFile
-          );
-            
-            readMarkdownFile(file, folderName)
-        }
-      })
 
-          console.log('Files processed.');
-          console.log('HTML Files created.');
+          // Appending the rest of the text
+          fs.appendFile(`${process.cwd()}/${folderName}/${path.parse(fileName).name}.html`, editedText.replace(title, ""), function (err) {
+            if (err) throw err;
+          })
+        })
+}
+
+
+function createOutputFolder(folderName){
+  try {
+    if (!fs.existsSync(folderName)) {
+      fs.mkdirSync(folderName)
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+
+function successMsg(){
+  console.log('Files processed.');
+  console.log('HTML Files created.');
 }
 // ----------------------------------------------------------------------------------------------------------
 
