@@ -6,7 +6,7 @@ sat down together to our breakfast one morning.`
 
 ## “Go! Where to?” 
 
-** “To Dartmoor; to King’s Pyland.” **
+**“To Dartmoor; to King’s Pyland.”**
 
 ---
 

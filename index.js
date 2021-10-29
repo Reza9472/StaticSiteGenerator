@@ -3,6 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const { program } = require('commander');
+const showdown = require("showdown")
 
 
 program.version( require('./package.json').version); // Getting the verison of the file
@@ -56,41 +57,6 @@ if(options.index || options.config){
  
 }
 
-function createHTMLFromMarkdown(para) {
-  let p =  para
-    .replace(/^# (.*$)/gim, "<h1>$1</h1>")
-    .replace(/^## (.*$)/gim, "<h2>$1</h2>")
-    .replace(/^--- (.*$)/gim, "<hr/>")
-    .replace(/^### (.*$)/gim, '<h3>$1</h3>')
-		.replace(/^\> (.*$)/gim, '<blockquote>$1</blockquote>')
-		.replace(/\*\*(.*)\*\*/gim, '<b>$1</b>')
-		.replace(/\*(.*)\*/gim, '<i>$1</i>')
-		.replace(/\[(.*?)\]\((.*?)\)/gim, "<a href='$2'>$1</a>")
-		.replace(/\n$/gim, '<br /><br />')
-    .replace(/^( ?[-_*]){3,} ?[\t]*$/ , '<hr>')
-    .replace(/`([^`]+)`/g, '<code>$1</code>');
-
-    return `<p style=" font-family: 'Gentium Basic', serif; font-size: 24px; padding: 10px; border-radius: 20px">${p}</p>`;
-}
-
-function removeMarkdownFormatting(text){
-  return text
-		.replace(/^### (.*$)/gim, '$1')
-		.replace(/^## (.*$)/gim, '$1')
-		.replace(/^# (.*$)/gim, '$1')
-		.replace(/^\> (.*$)/gim, '$1')
-		.replace(/\*\*(.*)\*\*/gim, '$1')
-		.replace(/\*(.*)\*/gim, '$1')
-		.replace(/\n$/gim, '$1')
-}
-
-function readMarkdownFile(file, folderName) {
-  readText(file , folderName , true);
-}
-
-function styleText(para){
-  return para.replace(/\r?\n/, ' ');
-}
 
 function emptyDirectory(directory){
   fs.readdir(directory, (err, files) => {
@@ -122,10 +88,9 @@ function generateHTMLFromFile(input = process.argv[3], outputFolder="./dist"){
 
     function createHTML(){
       var filename = input
-
       appendTextInHTML(filename , folderName);
       
-      } 
+    } 
       let extension = path.extname(input);
       if (extension  === ".txt") {
         const directory = outputFolder;
@@ -136,7 +101,7 @@ function generateHTMLFromFile(input = process.argv[3], outputFolder="./dist"){
       } else if (extension === ".md") {
         const directory = 'dist'
         emptyDirectory(directory);
-        readMarkdownFile(input, outputFolder)
+        createHTML();
         console.log("Operation Successful\nHTML file created");
       }
 }
@@ -175,53 +140,24 @@ function generateHTMLFromDir(input = process.argv[3], outputFolder = "dist"){
 }
 
 function appendTextInHTML(fileName , folderName){
-  const htmlFile = fs.readFileSync(`${__dirname}/index.html`)
+  let htmlFile = fs.readFileSync(`${__dirname}/index.html`)
 
-      filenameWithoutExt = path.parse(fileName).name; // The name part of the file (EX: name.txt => name)
+  let filenameWithoutExt = path.parse(fileName).name; // The name part of the file (EX: name.txt => name)
       fs.writeFileSync(`${process.cwd()}/${folderName}/${filenameWithoutExt}.html`, htmlFile);
-      readText(fileName , folderName)
+      readText(fileName , folderName , htmlFile)
 }
 
-function readText(fileName , folderName , isMdFile = false){
+function readText(fileName , folderName , htmlFile){
   fs.readFile(fileName, { encoding: 'utf8', flag: 'r' },
         function (err, data) {
           if (err)
             console.log(err);
           else
 
-          if(isMdFile === true){
-
-            var editedText = data // Editing the text to recieved from the files 
-            .split(/\r?\n\r?\n/)
-            .map(para =>
-              `<p font-family: 'Gentium Basic', serif; font-size: 24px; padding: 10px; border-radius: 20px">${createHTMLFromMarkdown(para)}</p>`
-              )
-              .join(' ');
-          }else{
-            var editedText = data // Editing the text to recieved from the files 
-            .split(/\r?\n\r?\n/)
-            .map(para =>
-              `<p font-family: 'Gentium Basic', serif; font-size: 24px; padding: 10px; border-radius: 20px">${styleText(para)}</p>`
-              )
-              .join(' ');
-          } 
-
-          if(isMdFile === false){
-
-            var title = editedText.split("</p>")[0].split(">", 2)[1]; // getting the title of the text
-          }else {
-            var title = removeMarkdownFormatting(data.split("\n")[0]);
-          }
-
-          titleInsidePTag = `<h1 style="text-align: center; background-color: black; color: white; width: 50%; border-radius: 10px; margin: auto; top: 15px; ">${title}</h1>`
-
-          // Appending the title
-          fs.appendFile(`${process.cwd()}/${folderName}/${path.parse(fileName).name}.html`, titleInsidePTag, function (err) {
-            if (err) throw err;
-          })
+          htmlFile += new showdown.Converter().makeHtml(data)          
 
           // Appending the rest of the text
-          fs.appendFile(`${process.cwd()}/${folderName}/${path.parse(fileName).name}.html`, editedText.replace(title, ""), function (err) {
+          fs.appendFile(`${process.cwd()}/${folderName}/${path.parse(fileName).name}.html`, htmlFile, function (err) {
             if (err) throw err;
           })
         })
