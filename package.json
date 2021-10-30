@@ -12,6 +12,7 @@
   "author": "Reza Poursafa",
   "license": "MIT",
   "dependencies": {
-    "commander": "^8.2.0"
+    "commander": "^8.2.0",
+    "showdown": "^1.9.1"
   }
 }
