@@ -1,6 +1,6 @@
 {
-    "input": "./text files",
-    "output": "./dist1234",
-    "stylesheet": "https://cdn.jsdelivr.net/npm/water.css@2/out/water.css",
-    "lang": "fr"
+  "input": "./text files",
+  "output": "./dist1234",
+  "stylesheet": "https://cdn.jsdelivr.net/npm/water.css@2/out/water.css",
+  "lang": "fr"
 }

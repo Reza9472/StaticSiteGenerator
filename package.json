@@ -7,12 +7,21 @@
     "reza-ssg": "./index.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prettier": "prettier --write .",
+    "prettier-check": "prettier --check .",
+    "eslint": "eslint --config .eslintrc.js .",
+    "prepare": "husky install"
   },
   "author": "Reza Poursafa",
   "license": "MIT",
   "dependencies": {
     "commander": "^8.2.0",
     "showdown": "^1.9.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.1.0",
+    "prettier": "2.4.1",
+    "pretty-quick": "^3.1.1"
   }
 }
