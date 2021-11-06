@@ -28,13 +28,13 @@
 
 * Formatting the code using prettier:
 
- ``` npx prettier --write . ```
+ ``` npm run prettier ```
 
 # Run the Linter
 
 * Running the Linter on the project:
 
- ``` npx eslint . ```
+ ``` npm run eslint ```
 # License
 This project is licensed under the MIT license
 
