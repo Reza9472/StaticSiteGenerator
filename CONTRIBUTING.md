@@ -20,10 +20,20 @@
 * Create an html file from a text or markdown file:
 
   ``` reza-ssg --index "Silver Blaze".txt ```
+  ``` reza-ssg -i Silver.md ```
 
 * Create html files from all the text or markdown files inside the 'text files' folder:
 
   ``` reza-ssg --index "text files" ```
+* Add your options like input, output, stylesheet and lang to a JSON file and pass it to the program.
+
+``` reza-ssg -c config1.json ```
+
+# Unit Tests
+
+* Run tests on the code to make sure the functions work
+
+``` npm test ```
 # Format the code
 
 * Formatting the code using prettier:
