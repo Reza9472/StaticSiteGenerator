@@ -8,6 +8,7 @@
   },
   "scripts": {
     "test": "jest --coverage",
+    "commit": "git-cz",
     "prettier": "prettier --write .",
     "prettier-check": "prettier --check .",
     "eslint": "eslint --config .eslintrc.js .",
@@ -20,6 +21,7 @@
     "showdown": "^1.9.1"
   },
   "devDependencies": {
+    "cz-conventional-changelog": "^3.3.0",
     "eslint": "^8.1.0",
     "jest": "^27.3.1",
     "prettier": "2.4.1",
@@ -29,5 +31,10 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/Reza9472/StaticSiteGenerator.git"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }
