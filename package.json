@@ -1,6 +1,6 @@
 {
   "name": "StaticSiteGenerator",
-  "version": "1.0.0",
+  "version": "0.0.0-development",
   "description": "",
   "main": "index.js",
   "bin": {
@@ -10,7 +10,8 @@
     "test": "jest --coverage",
     "prettier": "prettier --write .",
     "prettier-check": "prettier --check .",
-    "eslint": "eslint --config .eslintrc.js ."
+    "eslint": "eslint --config .eslintrc.js .",
+    "semantic-release": "semantic-release"
   },
   "author": "Reza Poursafa",
   "license": "MIT",
@@ -22,6 +23,11 @@
     "eslint": "^8.1.0",
     "jest": "^27.3.1",
     "prettier": "2.4.1",
-    "pretty-quick": "^3.1.1"
+    "pretty-quick": "^3.1.1",
+    "semantic-release": "^18.0.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Reza9472/StaticSiteGenerator.git"
   }
 }
