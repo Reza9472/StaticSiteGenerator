@@ -1,5 +1,5 @@
 {
-  "name": "StaticSiteGenerator",
+  "name": "staticsitegenerator",
   "version": "1.0.1",
   "description": "",
   "main": "index.js",
