@@ -8,7 +8,7 @@ const showdown = require("showdown");
 program.version(require("./package.json").version); // Getting the verison of the file
 program
   .option("-i ,--index", "Single txt file ") // option for adding a single text file
-  .option("-c ,--config", "JSON configuration file")
+  .option("-c ,--config", "JSON configuration file ")
   .option("--coverage , Testing with code coverage");
 
 program.parse(process.argv);
