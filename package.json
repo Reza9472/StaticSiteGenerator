@@ -2,6 +2,10 @@
   "name": "reza-ssgapp",
   "version": "1.0.2",
   "description": "",
+  "repository": {
+      "type": "git",
+      "url": "https://github.com/npm/cli.git"
+  },
   "main": "index.js",
   "bin": {
     "reza-ssg": "./index.js"
